@@ -50,9 +50,15 @@ client = PeopleDoc::V2::Client.new(
 
 ## Supported Functionality
 
-### RESTv1
+- RESTv1
+ - GET
+ - POST
+ - POST with file
 
 ### RESTv2
+ - GET
+ - POST
+ - PUT
 
 ## Development
 
