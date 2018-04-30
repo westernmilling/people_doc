@@ -1,3 +1,7 @@
+[![CircleCI](https://circleci.com/gh/westernmilling/people_doc.svg?style=svg&circle-token=f5b3c58d525d1d975f632b779221c1588cfeba97)](https://circleci.com/gh/westernmilling/people_doc)
+[![Maintainability](https://api.codeclimate.com/v1/badges/6ade98502a90fe627e29/maintainability)](https://codeclimate.com/github/westernmilling/people_doc/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/6ade98502a90fe627e29/test_coverage)](https://codeclimate.com/github/westernmilling/people_doc/test_coverage)
+
 # PeopleDoc
 Basic Ruby client library for the PeopleDoc REST APIs
 
