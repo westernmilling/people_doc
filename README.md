@@ -33,7 +33,7 @@ client = PeopleDoc::V1::Client.new(
   logger: Logger.new(STDOUT)
 )
 
-response = client.get('???')
+response = client.get('employees/12345678')
 ```
 
 ### RESTv2
@@ -46,19 +46,21 @@ client = PeopleDoc::V2::Client.new(
   config.client_id = 'client_id'
   config.logger = Logger.new(STDOUT)
 )
+
+response = client.get('organizations/ABC')
 ```
 
 ## Supported Functionality
 
 - RESTv1
- - GET
- - POST
- - POST with file
+  - GET
+  - POST
+  - POST with file
 
-### RESTv2
- - GET
- - POST
- - PUT
+- RESTv2
+  - GET
+  - POST
+  - PUT
 
 ## Development
 
