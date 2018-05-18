@@ -165,15 +165,8 @@ RSpec.describe PeopleDoc::V1::Client do
       instance.post_file('enterprise/documents', file, data)
     end
 
-    let(:file) { File.new("#{File.dirname(__FILE__)}/MeaninglessPDF.pdf") }
-    let(:data) do
-      {
-        document_type_code: 'test',
-        document_type_metas: {},
-        organization_codes: %w(global),
-        title: 'MeaninglessPDF.pdf'
-      }
-    end
+    let(:file) { double }
+    let(:data) { double }
 
     before do
       stub_request(:post, "#{base_url}/api/v1/enterprise/documents/")
@@ -195,11 +188,24 @@ RSpec.describe PeopleDoc::V1::Client do
     end
 
     context 'when the details are valid' do
-      it 'returns the document details'
+      let(:new_id) { 10_000 + rand(1_000) }
+      let(:response) do
+        {
+          status: 201,
+          body: { id: new_id }.to_json,
+          headers: {
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json'
+          }
+        }
+      end
+
+      it 'returns the document id' do
+        expect(subject).to include('id' => new_id)
+      end
     end
 
     context 'when the request is not valid' do
-      let(:employee_data) { {} }
       let(:response) do
         {
           status: 400,
