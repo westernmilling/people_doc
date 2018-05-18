@@ -3,6 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe PeopleDoc::V1::Client do
+  RSpec.shared_context 'invalid API key' do
+    let(:response) do
+      {
+        status: 403,
+        body: 'Auth Token invalid'
+      }
+    end
+  end
+
+  RSpec.shared_examples 'fails with PeopleDoc::Unauthorized' do
+    it 'fails with PeopleDoc::Unauthorized' do
+      expect { subject }
+        .to raise_error(PeopleDoc::Unauthorized, 'Auth Token invalid')
+    end
+  end
+
   let(:api_key) { SecureRandom.uuid }
   let(:base_url) { 'https://api.test.us.people-doc.com' }
   let(:host_uri) { URI.parse(base_url) }
@@ -38,17 +54,8 @@ RSpec.describe PeopleDoc::V1::Client do
     end
 
     context 'when the API Key is not valid' do
-      let(:response) do
-        {
-          status: 403,
-          body: 'Auth Token invalid'
-        }
-      end
-
-      it 'fails with PeopleDoc::Unauthorized' do
-        expect { subject }
-          .to raise_error(PeopleDoc::Unauthorized, 'Auth Token invalid')
-      end
+      include_context 'invalid API key'
+      include_examples 'fails with PeopleDoc::Unauthorized'
     end
 
     context 'when the employee exists' do
@@ -140,6 +147,76 @@ RSpec.describe PeopleDoc::V1::Client do
     end
   end
 
+  describe 'post a company document' do
+    subject do
+      instance.post_file('enterprise/documents', file, data)
+    end
+
+    let(:file) { double }
+    let(:data) { double }
+
+    before do
+      stub_request(:post, "#{base_url}/api/v1/enterprise/documents/")
+        .with(
+          # body: nil, # No body mock as this won't work with multipart
+          headers: {
+            'Accept' => 'multipart/form-data',
+            'X-API-KEY' => api_key,
+            'Host' => host_uri.host,
+            'User-Agent' => 'PeopleDoc::V1::Client'
+          }
+        )
+        .to_return(response)
+    end
+
+    context 'when the API Key is not valid' do
+      include_context 'invalid API key'
+      include_examples 'fails with PeopleDoc::Unauthorized'
+    end
+
+    context 'when the details are valid' do
+      let(:new_id) { rand(10_000...11_000) }
+      let(:response) do
+        {
+          status: 201,
+          body: { id: new_id }.to_json,
+          headers: {
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json'
+          }
+        }
+      end
+
+      it 'returns the document id' do
+        expect(subject).to include('id' => new_id)
+      end
+    end
+
+    context 'when the request is not valid' do
+      let(:response) do
+        {
+          status: 400,
+          body: {
+            message: 'Invalid param document_type_code',
+            code: '1409',
+            success: false
+          }.to_json,
+          headers: {
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json'
+          }
+        }
+      end
+
+      it 'fails with PeopleDoc::BadRequest' do
+        expect { subject }
+          .to raise_error(
+            PeopleDoc::BadRequest, 'Invalid param document_type_code'
+          )
+      end
+    end
+  end
+
   describe 'post employee details' do
     subject do
       instance.post('employees', employee_data)
@@ -161,19 +238,11 @@ RSpec.describe PeopleDoc::V1::Client do
     end
 
     context 'when the API Key is not valid' do
-      # We don't care about the employee data as it wouldn't get that far
-      let(:employee_data) { {} }
-      let(:response) do
-        {
-          status: 403,
-          body: 'Auth Token invalid'
-        }
-      end
+      include_context 'invalid API key'
 
-      it 'fails with PeopleDoc::Unauthorized' do
-        expect { subject }
-          .to raise_error(PeopleDoc::Unauthorized, 'Auth Token invalid')
-      end
+      let(:employee_data) { {} }
+
+      include_examples 'fails with PeopleDoc::Unauthorized'
     end
 
     context 'when the request is not valid' do
