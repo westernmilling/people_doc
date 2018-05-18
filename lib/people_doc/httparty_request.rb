@@ -48,8 +48,7 @@ module PeopleDoc
       @logger.debug("-- Payload: #{payload}")
 
       raises_unless_success do
-        HTTMultiParty
-          .send(http_method.to_sym, url, body: payload, headers: headers)
+        HTTParty.post(url, body: payload, headers: headers)
       end.parsed_response
     end
 

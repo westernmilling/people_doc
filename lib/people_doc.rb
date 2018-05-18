@@ -113,11 +113,11 @@ module PeopleDoc
       def post_file(resource, file, payload)
         @request.post_file(
           base_headers.merge(
-            'Content-Type' => 'multipart/form-data'
+            'Accept' => 'multipart/form-data'
           ),
           "api/v1/#{resource}/",
           file: file,
-          data: payload.to_json
+          data: payload ? payload.to_json : nil
         )
       end
 
