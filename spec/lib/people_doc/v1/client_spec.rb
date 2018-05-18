@@ -188,7 +188,7 @@ RSpec.describe PeopleDoc::V1::Client do
     end
 
     context 'when the details are valid' do
-      let(:new_id) { 10_000 + rand(1_000) }
+      let(:new_id) { rand(10_000...11_000) }
       let(:response) do
         {
           status: 201,
@@ -252,6 +252,9 @@ RSpec.describe PeopleDoc::V1::Client do
 
     context 'when the API Key is not valid' do
       include_context 'invalid API key'
+
+      let(:employee_data) { {} }
+
       include_examples 'fails with PeopleDoc::Unauthorized'
     end
 
