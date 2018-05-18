@@ -57,19 +57,6 @@ RSpec.describe PeopleDoc::V1::Client do
       include_context 'invalid API key'
       include_examples 'fails with PeopleDoc::Unauthorized'
     end
-    # context 'when the API Key is not valid' do
-    #   let(:response) do
-    #     {
-    #       status: 403,
-    #       body: 'Auth Token invalid'
-    #     }
-    #   end
-    #
-    #   it 'fails with PeopleDoc::Unauthorized' do
-    #     expect { subject }
-    #       .to raise_error(PeopleDoc::Unauthorized, 'Auth Token invalid')
-    #   end
-    # end
 
     context 'when the employee exists' do
       let(:response) do
