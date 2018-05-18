@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    people_doc (0.1.0)
+    people_doc (0.2.0)
       httparty
 
 GEM
